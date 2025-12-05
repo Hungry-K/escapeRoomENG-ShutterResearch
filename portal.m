@@ -3,17 +3,17 @@ clc
 
 room = escapeRoomEngine('test.png',10,10,0,0,8,[255,255,255]);
 %room size
-max_dim=9;
+max_dim=9;%dimmention of room
 %innitial x/y positions
-port_x =1;
+port_x =1;%portal curser
 port_y =1;
-orgP_x =2;
+orgP_x =2;%orange portal
 orgP_y =1;
-bluP_x =3;
+bluP_x =3;%blue portal
 bluP_y =1;
-exitx =8;
+exitx =8;%exit
 exity =8;
-guy_y=3;
+guy_y=3;%charicter
 guy_x=2;
 %sprite locations
 blue_guy_pos=5; 
@@ -24,9 +24,9 @@ tileplace=6;
 tilena=8;
 tileext=7;
 %background innitialization
-bcgmx=[ 1, 1, 1,20,18,18,18,18,12;
-       20,18,18, 6, 6, 6, 6, 6,16;
-       24, 6, 6, 6, 6, 6, 6, 6,16;
+bcgmx=[20,18,18,18,18,18,18,18,12;
+       24, 6, 6, 8, 8, 8, 6, 6,16;
+       24, 6, 6, 8, 8, 8, 6, 6,16;
        24, 6, 6, 9,10,11, 6, 6,16;
        24, 6, 6,13,14,15, 6, 6,16;
        24, 6, 6,17,18,19, 6, 6,16;
@@ -34,16 +34,17 @@ bcgmx=[ 1, 1, 1,20,18,18,18,18,12;
        24, 6, 6, 6, 6, 6, 6, 6,16;
        17,18,18,18,18,18,18,18,18; ];
 background=bcgmx;
-background(exitx,exity)=7;
-walls =[9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24];
+background(exitx,exity)=tileext;
+walls =[9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24];%wall sprits
 %guyground innitializtion
 guyground=ones(max_dim,max_dim); 
 guyground(guy_y,guy_x)=blue_guy_pos; 
 %portground innitializtion
 portground =ones(max_dim,max_dim)*1;
-portground(port_y, port_x)= port_pos;
-portground(orgP_y,orgP_x)=orgP_pos;
-portground(bluP_y,bluP_x)=bluP_pos;
+
+% portground(port_y, port_x)= port_pos;
+% portground(orgP_y,orgP_x)=orgP_pos;
+% portground(bluP_y,bluP_x)=bluP_pos;
 
 
 
@@ -86,19 +87,19 @@ while(exit==0)
     end
 
       case(0)%portal mode
-    if(strcmp(key_down,'rightarrow')==1 && port_x<max_dim && ~(ismember(bcgmx(port_x+1, port_y), walls)))
+    if(strcmp(key_down,'rightarrow')==1 && port_x<max_dim && ~(ismember(bcgmx(port_x+1, port_y), walls)) && port_y==guy_y)
        portground(port_y,port_x)=1;
         port_x=port_x+1;
         portground(port_y,port_x)=port_pos;
-    elseif(strcmp(key_down,'leftarrow')==1 && port_x>1 && ~(ismember(bcgmx(port_x-1, port_y), walls)))
+    elseif(strcmp(key_down,'leftarrow')==1 && port_x>1 && ~(ismember(bcgmx(port_x-1, port_y), walls)) && port_y==guy_y)
        portground(port_y,port_x)=1;
         port_x=port_x-1;
         portground(port_y,port_x)=port_pos;
-    elseif(strcmp(key_down,'uparrow')==1 && port_y>1 && ~(ismember(bcgmx(port_x, port_y-1), walls)))
+    elseif(strcmp(key_down,'uparrow')==1 && port_y>1 && ~(ismember(bcgmx(port_x, port_y-1), walls))  && port_x==guy_x)
         portground(port_y,port_x)=1;
         port_y = port_y-1;
       portground(port_y,port_x)=port_pos;
-    elseif(strcmp(key_down,'downarrow')==1 && port_y<max_dim && ~(ismember(bcgmx(port_x, port_y+1), walls)))
+    elseif(strcmp(key_down,'downarrow')==1 && port_y<max_dim && ~(ismember(bcgmx(port_x, port_y+1), walls))  && port_x==guy_x)
          portground(port_y,port_x)=1;
         port_y = port_y+1;
        portground(port_y,port_x)=port_pos;
@@ -123,7 +124,7 @@ while(exit==0)
        portground(port_y,port_x)=1;
        port_x = 1;
        port_y = 1;
-       portground(port_y,port_x)=port_pos;
+       %portground(port_y,port_x)=port_pos;
     end
   end
 
