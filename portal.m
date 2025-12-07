@@ -1,9 +1,8 @@
 close all
 clc
 
-room = escapeRoomEngine('test.png',10,10,0,0,8,[255,255,255]);
+room = escapeRoomEngine('PortalSprites-265x265.png',32,32,1,1,8 ,[255,255,255]);
 %room size
-max_dim=9;%dimmention of room
 %innitial x/y positions
 port_x =1;%portal curser
 port_y =1;
@@ -11,73 +10,76 @@ orgP_x =2;%orange portal
 orgP_y =1;
 bluP_x =3;%blue portal
 bluP_y =1;
-exitx =8;%exit
-exity =8;
+exitx =12;%level
+exity =10;
 guy_y=3;%charicter
 guy_x=2;
 %sprite locations
-blue_guy_pos=5; 
-orgP_pos = 4;
-bluP_pos = 3;
-port_pos = 2;
-tileplace=6;
-tilena=8;
-tileext=7;
+eveU=30; 
+eveD=31;
+eveL=39;
+eveR=38;
+orgP_pos = 26;
+bluP_pos = 25;
+port_pos = 34;
+tileplace=29;
+tilena=2;
+tileext=[32, 40];
+walls =[4,11,12,41];%wall sprits
 %background innitialization
-bcgmx=[20,18,18,18,18,18,18,18,12;
-       24, 6, 6, 8, 8, 8, 6, 6,16;
-       24, 6, 6, 8, 8, 8, 6, 6,16;
-       24, 6, 6, 9,10,11, 6, 6,16;
-       24, 6, 6,13,14,15, 6, 6,16;
-       24, 6, 6,17,18,19, 6, 6,16;
-       24, 6, 6, 6, 6, 6, 6, 6,16;
-       24, 6, 6, 6, 6, 6, 6, 6,16;
-       17,18,18,18,18,18,18,18,18; ];
-background=bcgmx;
-background(exitx,exity)=tileext;
-walls =[9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24];%wall sprits
+bcgmx=[ 4, 4, 4, 4, 4, 4, 4, 3, 4, 4, 3, 3;
+        4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3;
+        4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4;
+        4, 3, 3, 2,29,29, 3, 3, 3, 3, 3, 3;
+        4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4;
+        4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4;
+        4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4;
+        3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4;
+        4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4;
+        4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,32;
+        4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,40;
+        4, 4, 4, 4, 4, 4, 4, 3, 4, 4, 4, 4;]
+max_dim=12;%dimmention of room
+background=bcgmx;%set backround as matrix
 %guyground innitializtion
-guyground=ones(max_dim,max_dim); 
-guyground(guy_y,guy_x)=blue_guy_pos; 
+guyground=ones(max_dim,max_dim); %make guyground clear
+guyground(guy_y,guy_x)=eveR; %put eve on starting quardinate
 %portground innitializtion
-portground =ones(max_dim,max_dim)*1;
+portground =ones(max_dim,max_dim);%make portground clear
 
-% portground(port_y, port_x)= port_pos;
-% portground(orgP_y,orgP_x)=orgP_pos;
-% portground(bluP_y,bluP_x)=bluP_pos;
 
 
 
 %initialize scene
 drawScene(room, background, portground,guyground)
-%%framerate = 30;
-exit=0;
-mode = 1; %1==walk,2==portal
 
-%will continuously run until person walks through exit
-while(exit==0)
-   key_down = getKeyboardInput(room);
+level=1;%level is false
+mode = 1; %1==walk,0==portal
+
+%will continuously run until person walks through level
+while(level==1)
+   key_down = getKeyboardInput(room);% get keybord imput and set value
    
    %swich between walk and portal mode
   switch mode 
       
       case(1)%walk mode
     if(strcmp(key_down,'rightarrow')==1 && guy_x<max_dim && ~(ismember(bcgmx(guy_y,guy_x+1), walls)))
-        guyground(guy_y,guy_x)=1;
-        guy_x=guy_x+1;
-        guyground(guy_y,guy_x)=blue_guy_pos;
-    elseif(strcmp(key_down,'leftarrow')==1 && guy_x>1&& ~(ismember(bcgmx(guy_y,guy_x-1), walls)))
+        guyground(guy_y,guy_x)=1;%set past clear
+        guy_x=guy_x+1; %move eve
+        guyground(guy_y,guy_x)=eveR; 
+    elseif(strcmp(key_down,'leftarrow')==1 && guy_x>1 && ~(ismember(bcgmx(guy_y,guy_x-1), walls)))
         guyground(guy_y,guy_x)=1;
         guy_x=guy_x-1;
-        guyground(guy_y,guy_x)=blue_guy_pos;
+        guyground(guy_y,guy_x)=eveL;
     elseif(strcmp(key_down,'uparrow')==1 && guy_y>1 && ~(ismember(bcgmx(guy_y-1,guy_x), walls)))
         guyground(guy_y,guy_x)=1;
         guy_y=guy_y-1;
-        guyground(guy_y,guy_x)=blue_guy_pos;
+        guyground(guy_y,guy_x)=eveU;
     elseif(strcmp(key_down,'downarrow')==1 && guy_y<max_dim && ~(ismember(bcgmx(guy_y+1,guy_x), walls)))
         guyground(guy_y,guy_x)=1;
         guy_y=guy_y+1;
-       guyground(guy_y,guy_x)=blue_guy_pos;
+       guyground(guy_y,guy_x)=eveD;
     elseif(strcmp(key_down,'r')==1)
         mode = 0;
         portground(port_y,port_x)=1;
@@ -103,15 +105,15 @@ while(exit==0)
          portground(port_y,port_x)=1;
         port_y = port_y+1;
        portground(port_y,port_x)=port_pos;
-    elseif(strcmp(key_down,'m')==1 && bcgmx(port_y,port_x)==6)
+    elseif(strcmp(key_down,'m')==1 && bcgmx(port_y,port_x)==tileplace)
        portground(orgP_y,orgP_x)=1;
-        orgP_x=port_x;
+        orgP_x=port_x;  
         orgP_y=port_y;
         port_x = guy_x;
         port_y = guy_y;
         portground(orgP_y,orgP_x)=orgP_pos;
         portground(port_y,port_x)=port_pos;
-    elseif(strcmp(key_down,'n')==1 && bcgmx(port_y,port_x)==6)
+    elseif(strcmp(key_down,'n')==1 && bcgmx(port_y,port_x)==tileplace)
        portground(bluP_y,bluP_x)=1;
         bluP_x=port_x;
         bluP_y=port_y;
@@ -124,26 +126,23 @@ while(exit==0)
        portground(port_y,port_x)=1;
        port_x = 1;
        port_y = 1;
-       %portground(port_y,port_x)=port_pos;
     end
   end
-
-
    %teleport
     if(guy_y==bluP_y && guy_x==bluP_x)% blu -> org
          guyground(guy_y,guy_x)=1;
         guy_y = orgP_y;
        guy_x = orgP_x;
-       guyground(guy_y,guy_x)=blue_guy_pos;
+       guyground(guy_y,guy_x)=eveR;
     elseif(guy_y==orgP_y && guy_x==orgP_x)%org -> blu
          guyground(guy_y,guy_x)=1;
         guy_y = bluP_y;
        guy_x = bluP_x;
-       guyground(guy_y,guy_x)=blue_guy_pos;
+       guyground(guy_y,guy_x)=eveL;
     end
-%exit room
-    if(guy_y==exitx && guy_x==exity) 
-        exit = 1; 
+%level room
+    if(ismember(bcgmx(guy_y,guy_x), tileext))
+        level = 2; 
         disp('next room'); 
     end
    
