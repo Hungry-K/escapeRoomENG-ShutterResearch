@@ -24,21 +24,21 @@ bluP_pos = 25;
 port_pos = 34;
 tileplace=29;
 tilena=2;
-tileext=[32, 40];
+tileext=[32, 40,48,56];
 walls =[4,11,12,41];%wall sprits
 %background innitialization
-bcgmx=[ 4, 4, 4, 4, 4, 4, 4, 3, 4, 4, 3, 3;
+bcgmx=[ 4, 4, 4, 4, 4, 4, 4, 3, 4, 3, 3, 3;
         4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3;
         4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4;
         4, 3, 3, 2,29,29, 3, 3, 3, 3, 3, 3;
-        4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4;
-        4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4;
+        4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3;
+        4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3;
         4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4;
         3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4;
         4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4;
-        4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,32;
-        4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,40;
-        4, 4, 4, 4, 4, 4, 4, 3, 4, 4, 4, 4;]
+        4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,48;
+        4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,56;
+        4, 4, 4, 4, 4, 4, 4, 3, 4, 4, 4, 4;];
 max_dim=12;%dimmention of room
 background=bcgmx;%set backround as matrix
 %guyground innitializtion
@@ -89,19 +89,19 @@ while(level==1)
     end
 
       case(0)%portal mode
-    if(strcmp(key_down,'rightarrow')==1 && port_x<max_dim && ~(ismember(bcgmx(port_x+1, port_y), walls)) && port_y==guy_y)
+    if(strcmp(key_down,'rightarrow')==1 && port_x<max_dim && ~(ismember(bcgmx(port_y, port_x+1), walls)) && port_y==guy_y)
        portground(port_y,port_x)=1;
         port_x=port_x+1;
         portground(port_y,port_x)=port_pos;
-    elseif(strcmp(key_down,'leftarrow')==1 && port_x>1 && ~(ismember(bcgmx(port_x-1, port_y), walls)) && port_y==guy_y)
+    elseif(strcmp(key_down,'leftarrow')==1 && port_x>1 && ~(ismember(bcgmx(port_y, port_x-1), walls)) && port_y==guy_y)
        portground(port_y,port_x)=1;
         port_x=port_x-1;
         portground(port_y,port_x)=port_pos;
-    elseif(strcmp(key_down,'uparrow')==1 && port_y>1 && ~(ismember(bcgmx(port_x, port_y-1), walls))  && port_x==guy_x)
+    elseif(strcmp(key_down,'uparrow')==1 && port_y>1 && ~(ismember(bcgmx(port_y-1, port_x), walls))  && port_x==guy_x)
         portground(port_y,port_x)=1;
         port_y = port_y-1;
       portground(port_y,port_x)=port_pos;
-    elseif(strcmp(key_down,'downarrow')==1 && port_y<max_dim && ~(ismember(bcgmx(port_x, port_y+1), walls))  && port_x==guy_x)
+    elseif(strcmp(key_down,'downarrow')==1 && port_y<max_dim && ~(ismember(bcgmx(port_y+1, port_x), walls))  && port_x==guy_x)
          portground(port_y,port_x)=1;
         port_y = port_y+1;
        portground(port_y,port_x)=port_pos;
