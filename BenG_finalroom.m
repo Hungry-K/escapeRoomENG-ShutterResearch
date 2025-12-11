@@ -1,7 +1,7 @@
 close all
 clear all
 clc
-Joystick_arduino= arduino("/dev/cu.usbmodem144101","Uno");%initialize arduino
+Joystick_arduino= arduino("/dev/cu.usbmodem144301","Uno");%initialize arduino
 
 %set values for pins
 xPin= 'A0'; %pin for joystick
@@ -46,17 +46,17 @@ walls =[4,11,12,41,52];%wall sprits
 door=0;
 %background innitialization
 if door==0
-bcgmx=[ 2, 2, 2, 2, 2, 2, 2, 29, 44, 45, 2, 2;
-        2, 2, 2, 2, 2, 2, 2, 2, 52, 53, 2, 2;
-        2, 2, 2, 2, 2, 2, 2, 43, 41, 41, 41, 41;
-        2, 2, 2, 2, 2, 2, 2, 51, 49, 49, 46, 47;
+bcgmx=[ 57, 2, 2, 2, 2, 2, 41, 2, 44, 45, 2, 2;
+        2, 2, 2, 2, 2, 2, 41, 2, 52, 53, 2, 2;
+        2, 2, 2, 59, 2, 2, 41, 41, 41, 41, 41, 41;
+        2, 2, 2, 2, 2, 2, 49, 49, 49, 49, 46, 47;
         29, 29, 2, 2, 2, 2, 2, 2, 2, 2, 54, 55;
         42, 43, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41;
         50, 51, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49;
-        2, 2, 2, 29, 2, 2, 2, 2, 2, 29, 29, 2;
+        2, 2, 29, 2, 2, 61, 2, 2, 2, 29, 29, 2;
         41, 41, 41, 42, 2, 2, 43, 41, 41, 42, 43, 41;
         49, 49, 49, 50, 2, 2, 51, 49, 49, 50, 51, 49;
-        29, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2;
+        29, 2, 60, 2, 2, 2, 2, 2, 2, 2, 2, 58;
         4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4;];
 else
 end
@@ -87,7 +87,20 @@ drawScene(room, background, portground,guyground)
 
 level=1;%level is false
 mode = 1; %1==walk,0==portal
-
+function setColor(a, pinR, pinG, pinB, r, g, b, commonAnode)
+    if nargin < 8
+        commonAnode = false;
+    end
+    rgb = double([r g b]);
+    rgb = max(min(rgb,255),0);    % clamp
+    duty = rgb / 255;             % scale to 0..1
+    if commonAnode
+        duty = 1 - duty;
+    end
+    writePWMDutyCycle(a, pinR, duty(1));
+    writePWMDutyCycle(a, pinG, duty(2));
+    writePWMDutyCycle(a, pinB, duty(3));
+end
 %will continuously run until person walks through level
 while(level==1)
    xvalue= readVoltage(Joystick_arduino,xPin);%read the values of the voltage for joystick
@@ -157,6 +170,7 @@ while(level==1)
         portground(orgP_y,orgP_x)=orgP_pos;
         portground(port_y,port_x)=port_pos;
         setColor(Joystick_arduino, pinR, pinG, pinB, 200, 20, 0);    % orange light
+       
 
     elseif(rvolt==5 && bcgmx(port_y,port_x)==tileplace)
        portground(bluP_y,bluP_x)=1;
@@ -166,7 +180,8 @@ while(level==1)
         port_y = guy_y;
         portground(bluP_y,bluP_x)=bluP_pos;
         portground(port_y,port_x)=port_pos;
-        setColor(Joystick_arduino, pinR, pinG, pinB, 0, 0, 200);    % Blue light
+        setColor(Joystick_arduino, pinR, pinG, pinB, 0, 0, 200);
+       
      elseif(Btnvalue==0)
        mode = 1;   
        portground(port_y,port_x)=1;
@@ -201,9 +216,3 @@ while(level==1)
     
 end
  % flash lights green    
-setColor(Joystick_arduino, pinR, pinG, pinB, 0, 200, 0)
-setColor(Joystick_arduino, pinR, pinG, pinB, 0, 0, 0)
-setColor(Joystick_arduino, pinR, pinG, pinB, 0, 200, 0)
-setColor(Joystick_arduino, pinR, pinG, pinB, 0, 0, 0)
-setColor(Joystick_arduino, pinR, pinG, pinB, 0, 200, 0)
-setColor(Joystick_arduino, pinR, pinG, pinB, 0, 0, 0)
